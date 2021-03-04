@@ -1,7 +1,8 @@
 <template>
   <v-app class="app">
-    <h1>Quotes</h1>
-    <Quotes :quotes="quoteInfo" v-if="quoteInfo.length"
+    <h1>List of Quotes</h1>
+
+    <Quotes :quotes="quoteInfo" v-if="hasQuotes"
       @removingQuote="updateQuotes" />
 
     <div class="buttons-container">
@@ -16,7 +17,7 @@ import {
   Component,
   Vue,
 } from 'vue-property-decorator';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import Quotes from './components/Quotes.vue';
 
@@ -30,10 +31,14 @@ import { IQuote } from './settings/types';
 export default class App extends Vue {
   private quoteInfo: IQuote[] = [];
 
-  getQuote(): void {
-    axios.get<IQuote>('https://api.kanye.rest').then((res) => {
-      this.quoteInfo.push(res.data);
-    });
+  get hasQuotes(): boolean {
+    return !!this.quoteInfo.length;
+  }
+
+  async getQuote(): Promise<void> {
+    const response: AxiosResponse = await axios.get<IQuote>('https://api.kanye.rest');
+
+    this.quoteInfo.push(response.data);
   }
 
   updateQuotes(newQuotesList: IQuote[]): void {

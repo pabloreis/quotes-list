@@ -1,8 +1,11 @@
 <template>
   <div class="quotes">
     <ul>
-      <li v-for="(quote, i) in quotesList" :key="quote.quote">
-        <p>{{ quote.quote }} <button @click="removeQuote(i)">X</button></p>
+      <li v-for="(quoteItem, i) in quotesList" :key="quoteItem.quote">
+        <p>
+          {{ quoteItem.quote }}
+          <button @click="removeQuote(i)">X</button>
+        </p>
       </li>
     </ul>
   </div>
@@ -20,13 +23,13 @@ import { IQuote } from '../settings/types';
 
 @Component
 export default class Quotes extends Vue {
-  @Prop({ required: true, type: Array }) public quotes: IQuote[];
+  @Prop({ required: true, type: Array }) public quotes!: IQuote[];
 
   private quotesList: IQuote[] = this.quotes;
 
   @Emit('removingQuote')
-  removeQuote(i: number) {
-    this.quotesList.splice(i, 1);
+  removeQuote(quoteIndex: number): IQuote[] | [] {
+    this.quotesList.splice(quoteIndex, 1);
 
     return this.quotesList;
   }
